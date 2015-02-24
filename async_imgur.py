@@ -17,6 +17,7 @@ def get_links(client_id):
     headers = {'Authorization': 'Client-ID {}'.format(client_id)}
     req = Request('https://api.imgur.com/3/gallery/', headers=headers, method='GET')
     with urlopen(req) as resp:
+        resp.readall()
         data = json.loads(resp.read().decode('utf-8'))
     return map(lambda item: item['link'], data['data'])
 
