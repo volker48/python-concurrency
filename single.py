@@ -33,18 +33,18 @@ def setup_download_dir():
     return download_dir
 
 
-def main(client_id):
+def main():
     ts = time()
+    client_id = os.getenv('IMGUR_CLIENT_ID')
+    if not client_id:
+        raise Exception("Couldn't find IMGUR_CLIENT_ID environment variable!")
     download_dir = setup_download_dir()
-    links = [l for l in get_links(client_id) if l.endswith(('.gif', '.jpg'))]
-    for link in links[:20]:
+    links = [l for l in get_links(client_id) if l.endswith('.jpg')]
+    for link in links:
         download_link(download_dir, link)
     print('Took {}s'.format(time() - ts))
 
 
 if __name__ == '__main__':
-    client_id = os.getenv('IMGUR_CLIENT_ID')
-    if not client_id:
-        raise Exception("Couldn't find IMGUR_CLIENT_ID environment variable!")
-    main(client_id)
+    main()
 
