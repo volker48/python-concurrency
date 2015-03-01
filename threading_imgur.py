@@ -1,11 +1,10 @@
-import json
 import logging
 import os
-from pathlib import Path
 from queue import Queue
 from threading import Thread
 from time import time
-from urllib.request import Request, urlopen
+
+from download import setup_download_dir, get_links, download_link
 
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -20,31 +19,12 @@ class DownloadWorker(Thread):
         Thread.__init__(self)
         self.queue = queue
 
-    def download_link(self, directory, link):
-        download_path = directory / os.path.basename(link)
-        with urlopen(link) as image, download_path.open('wb') as f:
-            f.write(image.readall())
-
     def run(self):
         while True:
+            # Get the work from the queue and expand the tuple
             directory, link = self.queue.get()
-            self.download_link(directory, link)
+            download_link(directory, link)
             self.queue.task_done()
-
-
-def get_links(client_id):
-    headers = {'Authorization': 'Client-ID {}'.format(client_id)}
-    req = Request('https://api.imgur.com/3/gallery/', headers=headers, method='GET')
-    with urlopen(req) as resp:
-        data = json.loads(resp.readall().decode('utf-8'))
-    return map(lambda item: item['link'], data['data'])
-
-
-def setup_download_dir():
-    download_dir = Path('images')
-    if not download_dir.exists():
-        download_dir.mkdir()
-    return download_dir
 
 
 def main():
@@ -54,14 +34,19 @@ def main():
         raise Exception("Couldn't find IMGUR_CLIENT_ID environment variable!")
     download_dir = setup_download_dir()
     links = [l for l in get_links(client_id) if l.endswith('.jpg')]
+    # Create a queue to communicate with the worker threads
     queue = Queue()
+    # Create 8 worker threads
     for x in range(8):
         worker = DownloadWorker(queue)
+        # Setting daemon to True will let the main thread exit even though the workers are blocking
         worker.daemon = True
         worker.start()
+    # Put the tasks into the queue as a tuple
     for link in links:
         logger.info('Queueing {}'.format(link))
         queue.put((download_dir, link))
+    # Causes the main thread to wait for the queue to finish processing all the tasks
     queue.join()
     print('Took {}'.format(time() - ts))
 
