@@ -21,10 +21,10 @@ def get_links(client_id):
 
 
 def download_link(directory, link):
-    logger.info('Downloading %s', link)
     download_path = directory / os.path.basename(link)
     with urlopen(link) as image, download_path.open('wb') as f:
         f.write(image.readall())
+    logger.info('Downloaded %s', link)
 
 
 def setup_download_dir():

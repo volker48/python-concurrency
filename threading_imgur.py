@@ -12,8 +12,7 @@ from time import time
 from download import setup_download_dir, get_links, download_link
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logging.getLogger('requests').setLevel(logging.CRITICAL)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +52,7 @@ def main():
         queue.put((download_dir, link))
     # Causes the main thread to wait for the queue to finish processing all the tasks
     queue.join()
-    print('Took {}'.format(time() - ts))
+    logging.info('Took %s', time() - ts)
 
 if __name__ == '__main__':
     main()

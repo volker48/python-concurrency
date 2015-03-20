@@ -3,10 +3,10 @@
 # Visit www.toptal.com/blog and subscribe to our newsletter to read great posts
 ####
 
-from functools import partial
 import logging
-from multiprocessing.pool import Pool
 import os
+from functools import partial
+from multiprocessing.pool import Pool
 from time import time
 
 from download import setup_download_dir, get_links, download_link
@@ -27,7 +27,7 @@ def main():
     download = partial(download_link, download_dir)
     with Pool(8) as p:
         p.map(download, links)
-    print('Took {}s'.format(time() - ts))
+    logging.info('Took %s seconds', time() - ts)
 
 
 if __name__ == '__main__':

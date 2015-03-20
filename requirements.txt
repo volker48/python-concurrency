@@ -1,0 +1,5 @@
+aiohttp==0.14.4
+click==3.3
+greenlet==0.4.5
+redis==2.10.3
+rq==0.5.0
