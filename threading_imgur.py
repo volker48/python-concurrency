@@ -27,8 +27,10 @@ class DownloadWorker(Thread):
         while True:
             # Get the work from the queue and expand the tuple
             directory, link = self.queue.get()
-            download_link(directory, link)
-            self.queue.task_done()
+            try:
+                download_link(directory, link)
+            finally:
+                self.queue.task_done()
 
 
 def main():
@@ -37,7 +39,7 @@ def main():
     if not client_id:
         raise Exception("Couldn't find IMGUR_CLIENT_ID environment variable!")
     download_dir = setup_download_dir()
-    links = (l for l in get_links(client_id) if l.endswith('.jpg'))
+    links = get_links(client_id)
     # Create a queue to communicate with the worker threads
     queue = Queue()
     # Create 8 worker threads

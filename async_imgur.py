@@ -38,7 +38,7 @@ def main():
     loop = asyncio.get_event_loop()
     # Instead of asyncio.async you can also use loop.create_task, but loop.create_task is only available
     # in Python >= 3.4.2
-    tasks = [asyncio.async(async_download_link(download_dir, l)) for l in get_links(client_id) if l.endswith('.jpg')]
+    tasks = [asyncio.async(async_download_link(download_dir, l)) for l in get_links(client_id)]
     loop.run_until_complete(asyncio.wait(tasks))
     loop.close()
     logger.info('Took %s seconds to complete', time() - ts)
