@@ -25,7 +25,7 @@ def main():
     download_dir = setup_download_dir()
     links = get_links(client_id)
     download = partial(download_link, download_dir)
-    with Pool(8) as p:
+    with Pool(4) as p:
         p.map(download, links)
     logging.info('Took %s seconds', time() - ts)
 
