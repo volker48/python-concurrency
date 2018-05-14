@@ -4,7 +4,7 @@ This is the code used as examples in the [post that I wrote](http://www.toptal.c
 
 ## Running the examples
 
-The examples have all been tested under Python 3.4.2 running on OS X. They _should_ work on other operating systems, but I haven't tested it everywhere.
+The examples have all been tested under Python 3.6.4 running on OS X. They _should_ work on other operating systems and Python 3.5+, but I haven't tested it everywhere.
 
 1. Get an [Imgur](https://imgur.com/account/settings/apps) API Key
 2. Install dependencies with `pip install -r requirements.txt`
